@@ -1,0 +1,10 @@
+﻿# Global ignore rules
+.DS_Store
+Thumbs.db
+*.log
+*.env
+.idea/
+.vscode/
+*/__pycache__/
+*/node_modules/
+*/build/

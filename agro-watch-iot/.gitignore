@@ -1,0 +1,6 @@
+﻿bin/
+vendor/
+*.exe
+*.out
+.env
+.vscode/
