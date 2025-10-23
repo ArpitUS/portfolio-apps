@@ -1,37 +1,37 @@
-# ==========================
-# Stage 1: Build frontend
-# ==========================
+# =======================================
+# Stage 1: Build the Vite app
+# =======================================
 FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Install build dependencies for native modules
-RUN apk add --no-cache python3 make g++
+# Add lightweight build tools only when needed
+RUN apk add --no-cache python3 make g++ 
 
-# Copy package files first
+# Copy dependency files
 COPY package*.json ./
 
-# Use npm ci for reproducible builds and retry on failure
+# Install dependencies safely (prevent OOM errors)
 RUN npm ci --legacy-peer-deps --no-audit --no-fund || npm install --legacy-peer-deps --no-audit --no-fund
 
-# Copy all other files
+# Copy rest of the source
 COPY . .
 
-# Increase memory limit to prevent Render OOM
+# Increase memory for Node during build
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
-# Build the production app
+# Build production app
 RUN npm run build
 
-# ==========================
-# Stage 2: Serve via NGINX
-# ==========================
+# =======================================
+# Stage 2: Serve with Nginx
+# =======================================
 FROM nginx:alpine
 
-# Copy built app
+# Copy the build output to Nginx’s HTML folder
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Expose HTTP port
+# Expose port 80 for Render
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
