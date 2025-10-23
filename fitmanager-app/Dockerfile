@@ -1,7 +1,10 @@
-﻿FROM node:20-alpine
+﻿# syntax=docker/dockerfile:1
+FROM python:3.11-slim
+
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
 COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
+
+RUN pip install --no-cache-dir fastapi uvicorn
+
+EXPOSE 8080
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
