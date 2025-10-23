@@ -1,4 +1,4 @@
-name: Build and Deploy Portfolio Apps
+﻿name: Build and Deploy Portfolio Apps
 
 on:
   push:
@@ -41,6 +41,6 @@ jobs:
           context: ${{ matrix.app }}
           push: true
           tags: |
-            ${{ env.DOCKERHUB_USERNAME != '' && format('{0}/{1}:latest', env.DOCKERHUB_USERNAME, matrix.app) || format('ghcr.io/{0}/{1}:latest', github.repository_owner, matrix.app) }}
+             ${{ env.DOCKERHUB_USERNAME != '' && format('{0}/{1}:latest', toLower(env.DOCKERHUB_USERNAME), matrix.app) || format('ghcr.io/{0}/{1}:latest', toLower(github.repository_owner), matrix.app) }}
           cache-from: type=registry,ref=${{ github.repository_owner }}/${{ matrix.app }}:buildcache
           cache-to: type=inline
