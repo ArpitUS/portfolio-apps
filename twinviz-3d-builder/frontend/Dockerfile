@@ -1,36 +1,37 @@
-# ===============================
-# Stage 1: Build the Vite frontend
-# ===============================
+# ==========================
+# Stage 1: Build frontend
+# ==========================
 FROM node:20-alpine AS build
 
-# Set working directory
 WORKDIR /app
 
-# Add system dependencies for native npm modules
+# Add system packages for npm builds
 RUN apk add --no-cache python3 make g++
 
-# Copy package files first for caching
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies safely (avoid peer issues)
-RUN npm install --legacy-peer-deps
+# Use legacy-peer-deps for compatibility & ensure deterministic install
+RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
-# Copy the remaining project files
+# Copy the rest of your code
 COPY . .
 
-# Build production version
+# Prevent memory-related crashes
+ENV NODE_OPTIONS=--max-old-space-size=2048
+
+# Build the project
 RUN npm run build
 
-# ===============================
-# Stage 2: Serve static files with NGINX
-# ===============================
+# ==========================
+# Stage 2: Serve via NGINX
+# ==========================
 FROM nginx:alpine
 
-# Copy built files from build stage
+# Copy built app
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Expose port 80
+# Expose HTTP port
 EXPOSE 80
 
-# Start NGINX
 CMD ["nginx", "-g", "daemon off;"]
