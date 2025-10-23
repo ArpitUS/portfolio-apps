@@ -1,5 +1,10 @@
 ﻿name: Build and Deploy Portfolio Apps
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 on:
   push:
     branches: [ main ]
