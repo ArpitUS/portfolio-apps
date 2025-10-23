@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: twinviz-3d-builder-backend
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: ENV
+        value: production
+
+  - type: web
+    name: twinviz-3d-builder
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    publishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://twinviz-3d-builder-backend.onrender.com
