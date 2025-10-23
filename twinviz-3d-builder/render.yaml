@@ -1,5 +1,19 @@
 services:
   - type: web
+    name: twinviz-3d-builder
+    env: docker
+    plan: free
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: VITE_API_URL
+        value: https://twinviz-3d-builder.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://twinviz-backend.onrender.com/$1
+
+  - type: web
     name: twinviz-backend
     env: docker
     plan: free
@@ -8,10 +22,3 @@ services:
     envVars:
       - key: PORT
         value: 8000
-
-  - type: web
-    name: twinviz-frontend
-    env: docker
-    plan: free
-    dockerfilePath: ./frontend/Dockerfile
-    dockerContext: ./frontend
