@@ -5,22 +5,22 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Add system packages for npm builds
+# Install build dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
+# Copy package files first
 COPY package*.json ./
 
-# Use legacy-peer-deps for compatibility & ensure deterministic install
-RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+# Use npm ci for reproducible builds and retry on failure
+RUN npm ci --legacy-peer-deps --no-audit --no-fund || npm install --legacy-peer-deps --no-audit --no-fund
 
-# Copy the rest of your code
+# Copy all other files
 COPY . .
 
-# Prevent memory-related crashes
+# Increase memory limit to prevent Render OOM
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
-# Build the project
+# Build the production app
 RUN npm run build
 
 # ==========================
