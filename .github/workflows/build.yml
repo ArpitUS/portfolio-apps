@@ -35,12 +35,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Prepare lowercase repo name
+        id: prep
+        run: |
+          echo "REPO_OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+          echo "DOCKER_USER_LC=${DOCKERHUB_USERNAME,,}" >> $GITHUB_ENV
+
       - name: Build and Push ${{ matrix.app }}
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.app }}
           push: true
           tags: |
-             ${{ env.DOCKERHUB_USERNAME != '' && format('{0}/{1}:latest', toLower(env.DOCKERHUB_USERNAME), matrix.app) || format('ghcr.io/{0}/{1}:latest', toLower(github.repository_owner), matrix.app) }}
-          cache-from: type=registry,ref=${{ github.repository_owner }}/${{ matrix.app }}:buildcache
+            ${{ env.DOCKERHUB_USERNAME != '' && format('{0}/{1}:latest', env.DOCKER_USER_LC, matrix.app) || format('ghcr.io/{0}/{1}:latest', env.REPO_OWNER_LC, matrix.app) }}
+          cache-from: type=registry,ref=${{ env.REPO_OWNER_LC }}/${{ matrix.app }}:buildcache
           cache-to: type=inline
