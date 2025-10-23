@@ -1,4 +1,6 @@
-﻿# builder stage: compile a static Go binary
+﻿# syntax=docker/dockerfile:1
+
+# builder stage: compile a static Go binary
 FROM golang:1.23.4-alpine3.19 AS builder
 WORKDIR /app
 
@@ -16,7 +18,7 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /main /main
 
-# run as non-root if your binary supports it (optional)
+# optional: run as non-root user
 # USER 1000
 
 ENTRYPOINT ["/main"]
