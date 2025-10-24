@@ -1,15 +1,19 @@
-﻿# AgroWatch IoT
+# 🌾 AgroWatch
 
-**Description:**  
-IoT-based farm monitoring system with alerts.
+AI-powered Smart Agriculture & Supply Chain Dashboard
 
-**Tech Stack:**  
-- Go, MQTT, Angular, BigQuery
+## Quick Start
 
-**Core Features:**  
-- IoT data ingestion  
-- Live dashboards
+1. `cd backend && uvicorn main:app --reload`
+2. Visit `http://127.0.0.1:8000`
+3. Frontend placeholder in `/frontend/src/App.jsx`
 
-**Setup Instructions:**  
-1. go run server.go  
-2. ng serve
+## Folder Overview
+
+- **backend/** → FastAPI + ML backend
+- **frontend/** → React-based dashboard
+- **deployment/** → Docker & CI/CD setup
+- **data/** → Sample and model data
+- **tests/** → Unit tests
+
+MIT License © 2025 AgroWatch Team
